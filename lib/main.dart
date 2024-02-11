@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:telegram_chat/pages/login_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,27 +11,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Telegram Clone',
-        theme: ThemeData(
-          primaryColor: Colors.lightBlueAccent,
-        ),
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              'Coding Cafe',
-              style: TextStyle(
-                fontSize: 26.0,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          body: const Center(
-            child: Text(
-              'Welcome to Telegram Clone App',
-              style: TextStyle(fontSize: 20.0),
-            ),
-          ),
-        ));
+      title: 'Telegram Clone',
+      theme: ThemeData(
+        primaryColor: Colors.lightBlueAccent,
+      ),
+      debugShowCheckedModeBanner: false,
+      home: const LoginScreen(),
+    );
   }
 }
