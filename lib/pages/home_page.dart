@@ -1,7 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:telegram_chat/main.dart';
 import 'package:telegram_chat/pages/account_settings_page.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -74,24 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: homePageHeader(),
-      body: SafeArea(
-        child: ElevatedButton.icon(
-          onPressed: logoutUser,
-          icon: const Icon(Icons.close),
-          label: const Text("Sign Out"),
-        ),
-      ),
     );
-  }
-
-  final GoogleSignIn googleSignIn = GoogleSignIn();
-  Future<Null> logoutUser() async {
-    await FirebaseAuth.instance.signOut();
-    await googleSignIn.disconnect();
-    await googleSignIn.signOut();
-    // ignore: use_build_context_synchronously
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const MyApp()),
-        (Route<dynamic> route) => false);
   }
 }

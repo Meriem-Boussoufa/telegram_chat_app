@@ -2,9 +2,14 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:telegram_chat/widgets/progress_widget.dart';
+
+import '../main.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -36,8 +41,8 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  late TextEditingController nickNameTextEditingController;
-  late TextEditingController aboutMeTextEditingController;
+  TextEditingController? nickNameTextEditingController;
+  TextEditingController? aboutMeTextEditingController;
 
   late SharedPreferences preferences;
   String id = "";
@@ -47,6 +52,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   File? imageFileAvatar;
   bool isLoading = false;
+
+  final FocusNode nickNameFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -105,13 +112,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   clipBehavior: Clip.hardEdge,
                                   // Display already existing -old image file
                                   child: CachedNetworkImage(
-                                    placeholder: (context, url) => Container(
-                                      child: const CircularProgressIndicator(
-                                        strokeWidth: 2.0,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Colors.lightBlueAccent),
-                                      ),
+                                    placeholder: (context, url) =>
+                                        const CircularProgressIndicator(
+                                      strokeWidth: 2.0,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.lightBlueAccent),
                                     ),
                                     imageUrl: photoUrl,
                                     width: 200.0,
@@ -153,11 +158,88 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ],
                   ),
                 ),
+              ),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: isLoading ? circularProgress() : Container(),
+                  ),
+                  // UserName
+                  Container(
+                    margin: const EdgeInsets.only(
+                        left: 10.0, bottom: 5.0, top: 10.0),
+                    child: const Text(
+                      "Profile Name :",
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.lightBlueAccent,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 30.0, right: 30.0),
+                    child: Theme(
+                      data: Theme.of(context)
+                          .copyWith(primaryColor: Colors.lightBlueAccent),
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          hintText: "e.g Meriem Boussoufa",
+                          contentPadding: EdgeInsets.all(5.0),
+                          hintStyle: TextStyle(color: Colors.grey),
+                        ),
+                        controller: nickNameTextEditingController,
+                        onChanged: (value) {
+                          nickname = value;
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // Buttons
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors
+                          .lightBlueAccent, // Change the background color here
+                    ),
+                    child: const Text(
+                      "Update",
+                      style: TextStyle(fontSize: 16.0, color: Colors.white),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: logoutUser,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          Colors.red, // Change the background color here
+                    ),
+                    child: const Text(
+                      'Logout',
+                      style: TextStyle(fontSize: 16.0, color: Colors.white),
+                    ),
+                  ),
+                ],
               )
             ],
           ),
         )
       ],
     );
+  }
+
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+  Future<Null> logoutUser() async {
+    await FirebaseAuth.instance.signOut();
+    await googleSignIn.disconnect();
+    await googleSignIn.signOut();
+    setState(() {
+      isLoading = false;
+    });
+    // ignore: use_build_context_synchronously
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const MyApp()),
+        (Route<dynamic> route) => false);
   }
 }
