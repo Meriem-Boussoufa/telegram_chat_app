@@ -44,10 +44,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             controller: searchTextEditingController,
             decoration: InputDecoration(
+                fillColor: Colors.lightBlue,
                 hintText: "Search here ...",
                 hintStyle: const TextStyle(color: Colors.white),
                 enabledBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey),
+                  borderSide: BorderSide(color: Colors.white),
                 ),
                 focusedBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white),
@@ -71,11 +72,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: homePageHeader(),
-      body: ElevatedButton.icon(
-        onPressed: logoutUser,
-        icon: const Icon(Icons.close),
-        label: const Text("Sign Out"),
+      body: SafeArea(
+        child: ElevatedButton.icon(
+          onPressed: logoutUser,
+          icon: const Icon(Icons.close),
+          label: const Text("Sign Out"),
+        ),
       ),
     );
   }

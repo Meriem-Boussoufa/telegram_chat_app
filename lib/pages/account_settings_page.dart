@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -22,7 +23,7 @@ class Settings extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: const SettingsScreen(),
+      body: const SafeArea(child: SettingsScreen()),
     );
   }
 }
@@ -44,7 +45,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String aboutMe = "";
   String photoUrl = "";
 
-  late File imageFileAvatar;
+  File? imageFileAvatar;
   bool isLoading = false;
 
   @override
@@ -55,13 +56,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void readDataFromLocal() async {
     preferences = await SharedPreferences.getInstance();
+    log('### This is the ID Check : $id');
     id = preferences.getString("id")!;
     nickname = preferences.getString("nickname")!;
     photoUrl = preferences.getString("photoUrl")!;
-    aboutMe = preferences.getString("aboutMe")!;
+    //aboutMe = preferences.getString("aboutMe")!;
 
     nickNameTextEditingController = TextEditingController(text: nickname);
-    aboutMeTextEditingController = TextEditingController(text: aboutMe);
+    //aboutMeTextEditingController = TextEditingController(text: aboutMe);
     setState(() {});
   }
 
@@ -130,7 +132,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               clipBehavior: Clip.hardEdge,
                               // Display The new Updated image here
                               child: Image.file(
-                                imageFileAvatar,
+                                imageFileAvatar!,
                                 width: 200.0,
                                 height: 200.0,
                                 fit: BoxFit.cover,
@@ -138,10 +140,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                       IconButton(
                         onPressed: getImage,
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.camera_alt,
                           size: 100.0,
-                          color: Colors.white54.withOpacity(0.3),
+                          color: Colors.white,
                         ),
                         padding: const EdgeInsets.all(0.0),
                         splashColor: Colors.transparent,
