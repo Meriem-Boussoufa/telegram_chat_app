@@ -6,6 +6,7 @@ import 'package:telegram_chat/pages/account_settings_page.dart';
 import 'package:telegram_chat/widgets/progress_widget.dart';
 
 import '../models/user.dart';
+import 'chatting_page.dart';
 
 class HomeScreen extends StatefulWidget {
   final String? currentUserID;
@@ -170,6 +171,7 @@ class UserResult extends StatelessWidget {
         child: Column(
           children: [
             GestureDetector(
+              onTap: () => sendUserToChattPage(context),
               child: ListTile(
                 leading: CircleAvatar(
                   backgroundColor: Colors.black,
@@ -197,5 +199,16 @@ class UserResult extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  sendUserToChattPage(context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Chat(
+                  receiverId: eachUser.id,
+                  receiveravatar: eachUser.photoUrl,
+                  receiverName: eachUser.nickname,
+                )));
   }
 }
