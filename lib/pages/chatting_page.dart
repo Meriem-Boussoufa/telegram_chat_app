@@ -1,7 +1,11 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:telegram_chat/widgets/progress_widget.dart';
 
 class Chat extends StatefulWidget {
@@ -68,6 +72,9 @@ class _ChatScreenState extends State<ChatScreen> {
   final FocusNode focusNode = FocusNode();
   bool isDisplaySticker = false;
   bool? isLoading;
+
+  File? imageFile;
+  String? imageUrl;
 
   @override
   void initState() {
@@ -137,7 +144,7 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-                onPressed: () {},
+                onPressed: () => onSendMessage("mim", 2),
                 child: Image.asset(
                   'assets/images/stickers/mim.jpeg',
                   width: 50,
@@ -145,7 +152,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   fit: BoxFit.cover,
                 )),
             ElevatedButton(
-                onPressed: () {},
+                onPressed: () => onSendMessage("mim1", 2),
                 child: Image.asset(
                   'assets/images/stickers/mim1.jpeg',
                   width: 50,
@@ -153,7 +160,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   fit: BoxFit.cover,
                 )),
             ElevatedButton(
-                onPressed: () {},
+                onPressed: () => onSendMessage("mim2", 2),
                 child: Image.asset(
                   'assets/images/stickers/mim2.jpeg',
                   width: 50,
@@ -167,7 +174,7 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-                onPressed: () {},
+                onPressed: () => onSendMessage("mim2", 2),
                 child: Image.asset(
                   'assets/images/stickers/mim2.png',
                   width: 50,
@@ -175,7 +182,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   fit: BoxFit.cover,
                 )),
             ElevatedButton(
-                onPressed: () {},
+                onPressed: () => onSendMessage("mim3", 2),
                 child: Image.asset(
                   'assets/images/stickers/mim3.gif',
                   width: 50,
@@ -183,7 +190,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   fit: BoxFit.cover,
                 )),
             ElevatedButton(
-                onPressed: () {},
+                onPressed: () => onSendMessage("mim3", 2),
                 child: Image.asset(
                   'assets/images/stickers/mim3.jpeg',
                   width: 50,
@@ -197,7 +204,7 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-                onPressed: () {},
+                onPressed: () => onSendMessage("mim4", 2),
                 child: Image.asset(
                   'assets/images/stickers/mim4.jpeg',
                   width: 50,
@@ -205,7 +212,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   fit: BoxFit.cover,
                 )),
             ElevatedButton(
-                onPressed: () {},
+                onPressed: () => onSendMessage("mim5", 2),
                 child: Image.asset(
                   'assets/images/stickers/mim5.jpeg',
                   width: 50,
@@ -213,7 +220,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   fit: BoxFit.cover,
                 )),
             ElevatedButton(
-                onPressed: () {},
+                onPressed: () => onSendMessage("mim6", 2),
                 child: Image.asset(
                   'assets/images/stickers/mim6.jpeg',
                   width: 50,
@@ -261,7 +268,7 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 1.0),
               child: IconButton(
-                onPressed: () => print("clicked"),
+                onPressed: getImage,
                 icon: const Icon(Icons.image),
                 color: Colors.lightBlueAccent,
               ),
@@ -298,7 +305,7 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 1.0),
               child: IconButton(
-                onPressed: () => print("clicked"),
+                onPressed: () => onSendMessage(textEditingController.text, 0),
                 icon: const Icon(Icons.send),
                 color: Colors.lightBlueAccent,
               ),
@@ -306,6 +313,49 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  void onSendMessage(String contentMsg, int type) {
+    // type = 0 its text msg
+    // type = 1 its imageFile
+    // type = 2 its sticker-emoji-gifs
+  }
+
+  Future getImage() async {
+    ImagePicker imagePicker = ImagePicker();
+    XFile? imageFile = await imagePicker.pickImage(source: ImageSource.gallery);
+    if (imageFile != null) {
+      isLoading = true;
+    }
+    uploadImageFile();
+  }
+
+  Future uploadImageFile() async {
+    String fileName = DateTime.now().microsecondsSinceEpoch.toString();
+    Reference storageReference =
+        FirebaseStorage.instance.ref().child("Chat Images").child(fileName);
+
+    UploadTask storageUploadTask = storageReference.putFile(imageFile!);
+    TaskSnapshot storageTaskSnapshot =
+        await storageUploadTask.whenComplete(() {});
+
+    storageTaskSnapshot.ref.getDownloadURL().then(
+      (downloadUrl) {
+        // Handle success
+        imageUrl = downloadUrl;
+        setState(() {
+          isLoading = false;
+          onSendMessage(imageUrl!, 1);
+        });
+      },
+      onError: (error) {
+        // Handle error
+        setState(() {
+          isLoading = false;
+        });
+        Fluttertoast.showToast(msg: "Error: $error");
+      },
     );
   }
 }
