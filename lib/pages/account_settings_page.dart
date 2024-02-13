@@ -14,8 +14,8 @@ import 'package:telegram_chat/widgets/progress_widget.dart';
 
 import '../main.dart';
 
-class Settings extends StatelessWidget {
-  const Settings({super.key});
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
