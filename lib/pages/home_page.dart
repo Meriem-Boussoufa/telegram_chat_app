@@ -15,6 +15,7 @@ class HomeScreen extends StatefulWidget {
   @override
   // ignore: no_logic_in_create_state
   State<HomeScreen> createState() =>
+      // ignore: no_logic_in_create_state
       _HomeScreenState(currentUserID: currentUserID);
 }
 
@@ -107,24 +108,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   displayNoSearchResultScreen() {
-    final Orientation orientation = MediaQuery.of(context).orientation;
-    return Container(
-      child: Center(
-        child: ListView(
-          shrinkWrap: true,
-          children: const [
-            Icon(Icons.group, color: Colors.lightBlueAccent, size: 200.0),
-            Text(
-              'Search Users',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.lightBlueAccent,
-                fontSize: 50.0,
-                fontWeight: FontWeight.w500,
-              ),
+    return Center(
+      child: ListView(
+        shrinkWrap: true,
+        children: const [
+          Icon(Icons.group, color: Colors.lightBlueAccent, size: 200.0),
+          Text(
+            'Search Users',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.lightBlueAccent,
+              fontSize: 50.0,
+              fontWeight: FontWeight.w500,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

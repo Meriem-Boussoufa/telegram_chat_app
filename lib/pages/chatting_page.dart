@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:telegram_chat/widgets/progress_widget.dart';
 
 class Chat extends StatefulWidget {
   final String receiverId;
@@ -41,8 +44,11 @@ class _ChatState extends State<Chat> {
         ),
         centerTitle: true,
       ),
-      body: ChatScreen(
-          receiverId: widget.receiverId, receiverAvatar: widget.receiveravatar),
+      body: SafeArea(
+        child: ChatScreen(
+            receiverId: widget.receiverId,
+            receiverAvatar: widget.receiveravatar),
+      ),
     );
   }
 }
@@ -60,22 +66,172 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController textEditingController = TextEditingController();
   final FocusNode focusNode = FocusNode();
+  bool isDisplaySticker = false;
+  bool? isLoading;
+
+  @override
+  void initState() {
+    super.initState();
+    focusNode.addListener(onFocusChange);
+    isDisplaySticker = false;
+    isLoading = false;
+  }
+
+  onFocusChange() {
+    if (focusNode.hasFocus) {
+      // Hide Stickers whenever keyboard appears
+      setState(() {
+        isDisplaySticker = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
-        child: Stack(
-      children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Stack(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Create List of Messages
+              Expanded(
+                child: createListMessages(),
+              ),
+              // Show Stickers
+              (isDisplaySticker ? createStickers() : Container()),
+              // Input controllers
+              createInput(),
+            ],
+          ),
+          createLoading(),
+        ],
+      ),
+      onPopInvoked: (didPop) {
+        if (!didPop && isDisplaySticker) {
+          setState(() {
+            isDisplaySticker = true;
+          });
+        }
+      },
+    );
+  }
+
+  createLoading() {
+    return Positioned(
+      child: isLoading! ? circularProgress() : Container(),
+    );
+  }
+
+  createStickers() {
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(top: BorderSide(color: Colors.grey, width: 0.5)),
+        color: Colors.white,
+      ),
+      height: 170.0,
+      child:
+          Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        // ** First Row
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            // Create List of Messages
-            createListMessages(),
-            // Input controllers
-            createInput(),
+            ElevatedButton(
+                onPressed: () {},
+                child: Image.asset(
+                  'assets/images/stickers/mim.jpeg',
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                )),
+            ElevatedButton(
+                onPressed: () {},
+                child: Image.asset(
+                  'assets/images/stickers/mim1.jpeg',
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                )),
+            ElevatedButton(
+                onPressed: () {},
+                child: Image.asset(
+                  'assets/images/stickers/mim2.jpeg',
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                )),
           ],
-        )
-      ],
-    ));
+        ),
+        // ** Second Row
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(
+                onPressed: () {},
+                child: Image.asset(
+                  'assets/images/stickers/mim2.png',
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                )),
+            ElevatedButton(
+                onPressed: () {},
+                child: Image.asset(
+                  'assets/images/stickers/mim3.gif',
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                )),
+            ElevatedButton(
+                onPressed: () {},
+                child: Image.asset(
+                  'assets/images/stickers/mim3.jpeg',
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                )),
+          ],
+        ),
+        // ** Third Row
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(
+                onPressed: () {},
+                child: Image.asset(
+                  'assets/images/stickers/mim4.jpeg',
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                )),
+            ElevatedButton(
+                onPressed: () {},
+                child: Image.asset(
+                  'assets/images/stickers/mim5.jpeg',
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                )),
+            ElevatedButton(
+                onPressed: () {},
+                child: Image.asset(
+                  'assets/images/stickers/mim6.jpeg',
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                )),
+          ],
+        ),
+      ]),
+    );
+  }
+
+  void getSticker() {
+    focusNode.unfocus();
+    setState(() {
+      isDisplaySticker = !isDisplaySticker;
+      log("####### User Demand Stickers Container : $isDisplaySticker");
+    });
   }
 
   createListMessages() {
@@ -116,28 +272,26 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 1.0),
               child: IconButton(
-                onPressed: () => print("clicked"),
+                onPressed: getSticker,
                 icon: const Icon(Icons.face),
                 color: Colors.lightBlueAccent,
               ),
             ),
           ),
           Flexible(
-              child: Container(
-            child: TextField(
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 15.0,
-              ),
-              controller: textEditingController,
-              decoration: const InputDecoration.collapsed(
-                hintText: "Write here ...",
-                hintStyle: TextStyle(
-                  color: Colors.grey,
-                ),
-              ),
-              focusNode: focusNode,
+              child: TextField(
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 15.0,
             ),
+            controller: textEditingController,
+            decoration: const InputDecoration.collapsed(
+              hintText: "Write here ...",
+              hintStyle: TextStyle(
+                color: Colors.grey,
+              ),
+            ),
+            focusNode: focusNode,
           )),
           Material(
             color: Colors.white,

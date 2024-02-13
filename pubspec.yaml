@@ -39,9 +39,18 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/google.png
+    - assets/images/stickers/mim.jpeg
+    - assets/images/stickers/mim1.jpeg
+    - assets/images/stickers/mim2.jpeg
+    - assets/images/stickers/mim2.png
+    - assets/images/stickers/mim3.gif
+    - assets/images/stickers/mim3.jpeg
+    - assets/images/stickers/mim4.jpeg
+    - assets/images/stickers/mim5.jpeg
+    - assets/images/stickers/mim6.jpeg
+
 
   fonts:
     - family: DancingScript
