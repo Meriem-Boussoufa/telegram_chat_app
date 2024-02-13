@@ -1,45 +1,26 @@
 {
   "project_info": {
-    "project_number": "843393508821",
-    "firebase_url": "https://telegram-chat-32e98-default-rtdb.firebaseio.com",
-    "project_id": "telegram-chat-32e98",
-    "storage_bucket": "telegram-chat-32e98.appspot.com"
+    "project_number": "941210601874",
+    "project_id": "social-telegram-chat-app",
+    "storage_bucket": "social-telegram-chat-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:843393508821:android:251498a1eb898b7af7c95c",
+        "mobilesdk_app_id": "1:941210601874:android:3219e4b7c1c38ac6fc994b",
         "android_client_info": {
           "package_name": "com.meriem_boussoufa.telegram_chat"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "843393508821-8q2h2nhf2r4kbqfttiidm57ricbfpuga.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.meriem_boussoufa.telegram_chat",
-            "certificate_hash": "d40aee96deaa4bdd052e64d3fc044d891c8762cb"
-          }
-        },
-        {
-          "client_id": "843393508821-77rkk70ti05mpr3stc6a8m5cuj1rfqn4.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD1OjZ7CqfmXTTbP22fjTC0RlKpyXLj1XE"
+          "current_key": "AIzaSyCcm5yNHczhMrUIUpcSSOpoHSWnB9edjyo"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "843393508821-77rkk70ti05mpr3stc6a8m5cuj1rfqn4.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

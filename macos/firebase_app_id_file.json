@@ -1,7 +1,7 @@
 {
   "file_generated_by": "FlutterFire CLI",
   "purpose": "FirebaseAppID & ProjectID for this Firebase app in this directory",
-  "GOOGLE_APP_ID": "1:843393508821:ios:c8d77871168cdf66f7c95c",
-  "FIREBASE_PROJECT_ID": "telegram-chat-32e98",
-  "GCM_SENDER_ID": "843393508821"
+  "GOOGLE_APP_ID": "1:941210601874:ios:44c205a7e38823a8fc994b",
+  "FIREBASE_PROJECT_ID": "social-telegram-chat-app",
+  "GCM_SENDER_ID": "941210601874"
 }

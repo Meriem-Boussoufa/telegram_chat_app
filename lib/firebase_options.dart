@@ -44,46 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA557Buw6yjl1c70Cn5MNJ2ch1V9TQ1SbM',
-    appId: '1:843393508821:web:5baba137763261c6f7c95c',
-    messagingSenderId: '843393508821',
-    projectId: 'telegram-chat-32e98',
-    authDomain: 'telegram-chat-32e98.firebaseapp.com',
-    databaseURL: 'https://telegram-chat-32e98-default-rtdb.firebaseio.com',
-    storageBucket: 'telegram-chat-32e98.appspot.com',
-    measurementId: 'G-ZZBJJENSXK',
+    apiKey: 'AIzaSyBnE-mMDqs-Q8NGrwE2Se1J7PfgTPUiiis',
+    appId: '1:941210601874:web:bdc01a54db760a13fc994b',
+    messagingSenderId: '941210601874',
+    projectId: 'social-telegram-chat-app',
+    authDomain: 'social-telegram-chat-app.firebaseapp.com',
+    storageBucket: 'social-telegram-chat-app.appspot.com',
+    measurementId: 'G-MK3G20B5H2',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD1OjZ7CqfmXTTbP22fjTC0RlKpyXLj1XE',
-    appId: '1:843393508821:android:251498a1eb898b7af7c95c',
-    messagingSenderId: '843393508821',
-    projectId: 'telegram-chat-32e98',
-    databaseURL: 'https://telegram-chat-32e98-default-rtdb.firebaseio.com',
-    storageBucket: 'telegram-chat-32e98.appspot.com',
+    apiKey: 'AIzaSyCcm5yNHczhMrUIUpcSSOpoHSWnB9edjyo',
+    appId: '1:941210601874:android:3219e4b7c1c38ac6fc994b',
+    messagingSenderId: '941210601874',
+    projectId: 'social-telegram-chat-app',
+    storageBucket: 'social-telegram-chat-app.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBYosrdnBed5IjwjJh4Cd5dgfB-8vNmvDU',
-    appId: '1:843393508821:ios:8500e8fc7410b2a9f7c95c',
-    messagingSenderId: '843393508821',
-    projectId: 'telegram-chat-32e98',
-    databaseURL: 'https://telegram-chat-32e98-default-rtdb.firebaseio.com',
-    storageBucket: 'telegram-chat-32e98.appspot.com',
-    androidClientId: '843393508821-8q2h2nhf2r4kbqfttiidm57ricbfpuga.apps.googleusercontent.com',
-    iosClientId: '843393508821-590pjgcq6gsbt7b0ql3c9j6n9r3umd2k.apps.googleusercontent.com',
+    apiKey: 'AIzaSyC-fNNUMjLbhmzY2-m_gzhc9kjMii4L9A4',
+    appId: '1:941210601874:ios:c1c743bed17b249efc994b',
+    messagingSenderId: '941210601874',
+    projectId: 'social-telegram-chat-app',
+    storageBucket: 'social-telegram-chat-app.appspot.com',
     iosBundleId: 'com.example.telegramChat',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBYosrdnBed5IjwjJh4Cd5dgfB-8vNmvDU',
-    appId: '1:843393508821:ios:c8d77871168cdf66f7c95c',
-    messagingSenderId: '843393508821',
-    projectId: 'telegram-chat-32e98',
-    databaseURL: 'https://telegram-chat-32e98-default-rtdb.firebaseio.com',
-    storageBucket: 'telegram-chat-32e98.appspot.com',
-    androidClientId: '843393508821-8q2h2nhf2r4kbqfttiidm57ricbfpuga.apps.googleusercontent.com',
-    iosClientId: '843393508821-rk0os28kkd22qhcgbkf2ri66s3298k3s.apps.googleusercontent.com',
+    apiKey: 'AIzaSyC-fNNUMjLbhmzY2-m_gzhc9kjMii4L9A4',
+    appId: '1:941210601874:ios:44c205a7e38823a8fc994b',
+    messagingSenderId: '941210601874',
+    projectId: 'social-telegram-chat-app',
+    storageBucket: 'social-telegram-chat-app.appspot.com',
     iosBundleId: 'com.example.telegramChat.RunnerTests',
   );
 }

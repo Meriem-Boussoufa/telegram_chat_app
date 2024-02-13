@@ -2,8 +2,11 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -54,6 +57,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool isLoading = false;
 
   final FocusNode nickNameFocusNode = FocusNode();
+  final FocusNode aboutMeFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -63,14 +67,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void readDataFromLocal() async {
     preferences = await SharedPreferences.getInstance();
-    log('### This is the ID Check : $id');
     id = preferences.getString("id")!;
     nickname = preferences.getString("nickname")!;
     photoUrl = preferences.getString("photoUrl")!;
-    //aboutMe = preferences.getString("aboutMe")!;
+    aboutMe = preferences.getString("aboutMe")!;
 
     nickNameTextEditingController = TextEditingController(text: nickname);
-    //aboutMeTextEditingController = TextEditingController(text: aboutMe);
+    aboutMeTextEditingController = TextEditingController(text: aboutMe);
     setState(() {});
   }
 
@@ -81,11 +84,71 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // ignore: unnecessary_null_comparison
     if (newImageFile != null) {
       setState(() {
-        imageFileAvatar = newImageFile as File;
+        imageFileAvatar = File(newImageFile.path);
         isLoading = true;
       });
     }
-    // uploadImageToFirestoreand Storage
+    // upload Image To Firestore and Storage
+    uploadImageToFirestoreandStorage();
+  }
+
+  Future uploadImageToFirestoreandStorage() async {
+    String mFileName = id;
+    Reference storageReference =
+        FirebaseStorage.instance.ref().child(mFileName);
+
+    UploadTask storageUploadTask = storageReference.putFile(imageFileAvatar!);
+
+    TaskSnapshot storageTaskSnapshot;
+    storageUploadTask.whenComplete(() {}).then((TaskSnapshot snapshot) {
+      storageTaskSnapshot = snapshot;
+      return storageTaskSnapshot.ref.getDownloadURL();
+    }).then((String downloadUrl) {
+      photoUrl = downloadUrl;
+      FirebaseFirestore.instance.collection("users").doc(id).update({
+        "photoUrl": photoUrl,
+        "nickname": nickname,
+        "aboutMe": aboutMe,
+      }).then((data) async {
+        await preferences.setString("photoUrl", photoUrl);
+        setState(() {
+          isLoading = false;
+        });
+        Fluttertoast.showToast(msg: "Updated Successfully.");
+      });
+    }).catchError((errorMsg) {
+      setState(() {
+        isLoading = false;
+      });
+      Fluttertoast.showToast(msg: "Error occured in getting Download URL.");
+    }).catchError((error) {
+      setState(() {
+        isLoading = false;
+      });
+      Fluttertoast.showToast(msg: error.toString());
+    });
+  }
+
+  void updateData() {
+    log("########### Update Function Called ############");
+    nickNameFocusNode.unfocus();
+    aboutMeFocusNode.unfocus();
+    setState(() {
+      isLoading = false;
+    });
+    FirebaseFirestore.instance.collection("users").doc(id).update({
+      "photoUrl": photoUrl,
+      "nickname": nickname,
+      "aboutMe": aboutMe,
+    }).then((data) async {
+      await preferences.setString("photoUrl", photoUrl);
+      await preferences.setString("nickname", nickname);
+      await preferences.setString("aboutMe", aboutMe);
+      setState(() {
+        isLoading = false;
+      });
+      Fluttertoast.showToast(msg: "Updated Successfully.");
+    });
   }
 
   @override
@@ -185,7 +248,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           .copyWith(primaryColor: Colors.lightBlueAccent),
                       child: TextField(
                         decoration: const InputDecoration(
-                          hintText: "e.g Meriem Boussoufa",
+                          hintText: "e.g Meriem ",
                           contentPadding: EdgeInsets.all(5.0),
                           hintStyle: TextStyle(color: Colors.grey),
                         ),
@@ -197,9 +260,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
+                  Container(
+                    margin: const EdgeInsets.only(
+                        left: 10.0, bottom: 5.0, top: 10.0),
+                    child: const Text(
+                      "About Me :",
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.lightBlueAccent,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 30.0, right: 30.0),
+                    child: Theme(
+                      data: Theme.of(context)
+                          .copyWith(primaryColor: Colors.lightBlueAccent),
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          hintText: "e.g Im ... ",
+                          contentPadding: EdgeInsets.all(5.0),
+                          hintStyle: TextStyle(color: Colors.grey),
+                        ),
+                        controller: aboutMeTextEditingController,
+                        onChanged: (value) {
+                          aboutMe = value;
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 50),
                   // Buttons
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: updateData,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors
                           .lightBlueAccent, // Change the background color here

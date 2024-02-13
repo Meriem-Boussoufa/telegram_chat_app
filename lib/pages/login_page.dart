@@ -125,6 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     UserCredential userCredential =
         await firebaseAuth.signInWithCredential(credential);
+    log('This is the UserCredential $userCredential.toString()');
     User? user = userCredential.user;
 
     // ** SignIn Success
