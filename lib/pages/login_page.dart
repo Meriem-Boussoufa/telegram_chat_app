@@ -93,6 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(
                           color: Colors.purple,
                           fontWeight: FontWeight.bold,
+                          fontFamily: "DancingScript",
                           fontSize: 20),
                     ),
                   ],

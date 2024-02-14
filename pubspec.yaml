@@ -41,15 +41,16 @@ flutter:
 
   assets:
     - assets/images/google.png
-    - assets/images/stickers/mim.jpeg
-    - assets/images/stickers/mim1.jpeg
-    - assets/images/stickers/mim2.jpeg
-    - assets/images/stickers/mim2.png
+    - assets/images/stickers/mim1.gif
+    - assets/images/stickers/mim2.gif
     - assets/images/stickers/mim3.gif
-    - assets/images/stickers/mim3.jpeg
-    - assets/images/stickers/mim4.jpeg
-    - assets/images/stickers/mim5.jpeg
-    - assets/images/stickers/mim6.jpeg
+    - assets/images/stickers/mim4.gif
+    - assets/images/stickers/mim5.gif
+    - assets/images/stickers/mim6.gif
+    - assets/images/stickers/mim7.gif
+    - assets/images/stickers/mim8.gif
+    - assets/images/stickers/mim9.gif
+    - assets/images/not_found.jpeg
 
 
   fonts:

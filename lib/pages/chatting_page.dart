@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:telegram_chat/widgets/progress_widget.dart';
 
@@ -87,6 +88,7 @@ class _ChatScreenState extends State<ChatScreen> {
   SharedPreferences? preferences;
   String? id;
 
+  // ignore: prefer_typing_uninitialized_variables
   var listMessages;
 
   @override
@@ -106,8 +108,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
     if (id.hashCode <= widget.receiverId.hashCode) {
       chatId = '$id-$widget.receiverId';
+      log('Receiver Id $chatId');
     } else {
       chatId = '$widget.receiverId-$id';
+      log('Receiver Id $chatId');
     }
     FirebaseFirestore.instance
         .collection("users")
@@ -134,9 +138,7 @@ class _ChatScreenState extends State<ChatScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // Create List of Messages
-              Expanded(
-                child: createListMessages(),
-              ),
+              createListMessages(),
               // Show Stickers
               (isDisplaySticker ? createStickers() : Container()),
               // Input controllers
@@ -176,25 +178,25 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-                onPressed: () => onSendMessage("mim", 2),
+                onPressed: () => onSendMessage("stickers/mim1", 2),
                 child: Image.asset(
-                  'assets/images/stickers/mim.jpeg',
+                  'assets/images/stickers/mim1.gif',
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
                 )),
             ElevatedButton(
-                onPressed: () => onSendMessage("mim1", 2),
+                onPressed: () => onSendMessage("stickers/mim2", 2),
                 child: Image.asset(
-                  'assets/images/stickers/mim1.jpeg',
+                  'assets/images/stickers/mim2.gif',
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
                 )),
             ElevatedButton(
-                onPressed: () => onSendMessage("mim2", 2),
+                onPressed: () => onSendMessage("stickers/mim3", 2),
                 child: Image.asset(
-                  'assets/images/stickers/mim2.jpeg',
+                  'assets/images/stickers/mim3.gif',
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
@@ -206,25 +208,25 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-                onPressed: () => onSendMessage("mim2", 2),
+                onPressed: () => onSendMessage("stickers/mim4", 2),
                 child: Image.asset(
-                  'assets/images/stickers/mim2.png',
+                  'assets/images/stickers/mim4.gif',
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
                 )),
             ElevatedButton(
-                onPressed: () => onSendMessage("mim3", 2),
+                onPressed: () => onSendMessage("stickers/mim5", 2),
                 child: Image.asset(
-                  'assets/images/stickers/mim3.gif',
+                  'assets/images/stickers/mim5.gif',
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
                 )),
             ElevatedButton(
-                onPressed: () => onSendMessage("mim3", 2),
+                onPressed: () => onSendMessage("stickers/mim6", 2),
                 child: Image.asset(
-                  'assets/images/stickers/mim3.jpeg',
+                  'assets/images/stickers/mim6.gif',
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
@@ -236,25 +238,25 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-                onPressed: () => onSendMessage("mim4", 2),
+                onPressed: () => onSendMessage("stickers/mim7", 2),
                 child: Image.asset(
-                  'assets/images/stickers/mim4.jpeg',
+                  'assets/images/stickers/mim7.gif',
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
                 )),
             ElevatedButton(
-                onPressed: () => onSendMessage("mim5", 2),
+                onPressed: () => onSendMessage("stickers/mim8", 2),
                 child: Image.asset(
-                  'assets/images/stickers/mim5.jpeg',
+                  'assets/images/stickers/mim8.gif',
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
                 )),
             ElevatedButton(
-                onPressed: () => onSendMessage("mim6", 2),
+                onPressed: () => onSendMessage("stickers/mim9", 2),
                 child: Image.asset(
-                  'assets/images/stickers/mim6.jpeg',
+                  'assets/images/stickers/mim9.gif',
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
@@ -314,22 +316,24 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  isLastMsgRight(int index) {
+  bool isLastMsgRight(int index) {
     if ((index > 0 &&
             listMessages != null &&
             listMessages[index - 1]["idFrom"] != id) ||
         index == 0) {
+      log("The Right Messages");
       return true;
     } else {
       return false;
     }
   }
 
-  isLastMsgLeft(int index) {
+  bool isLastMsgLeft(int index) {
     if ((index > 0 &&
             listMessages != null &&
             listMessages[index - 1]["idFrom"] == id) ||
         index == 0) {
+      log("The Left Messages");
       return true;
     } else {
       return false;
@@ -339,6 +343,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget createItem(int index, DocumentSnapshot document) {
     // ** My Messages  - Right Side
     if (document["idFrom"] == id) {
+      log("ENTER THE RIGHT SIDE OF MESSAGES");
       return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
         document["type"] == 0
             // ** Text Msg
@@ -397,7 +402,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               ),
                               clipBehavior: Clip.hardEdge,
                               child: Image.asset(
-                                '',
+                                'assets/images/not_found.jpeg',
                                 width: 200.0,
                                 height: 200.0,
                                 fit: BoxFit.cover,
@@ -410,6 +415,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         )),
                   )
+                // ** Sticker .gif Msg
                 : Container(
                     margin: EdgeInsets.only(
                         bottom: isLastMsgRight(index) ? 20.0 : 10.0,
@@ -424,7 +430,145 @@ class _ChatScreenState extends State<ChatScreen> {
       ]);
       // ** Receiver Messages - Left Side
     } else {
-      return Container();
+      log("Enter the Left Message Side of Messages");
+      return Container(
+        margin: const EdgeInsets.only(bottom: 10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                isLastMsgLeft(index)
+                    ? Material(
+                        // ** Display receiver Profile Image
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(18.0),
+                        ),
+                        clipBehavior: Clip.hardEdge,
+                        child: CachedNetworkImage(
+                          placeholder: (context, url) => Container(
+                            width: 35.0,
+                            height: 35.0,
+                            padding: const EdgeInsets.all(70.0),
+                            child: const CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.lightBlueAccent),
+                            ),
+                          ),
+                          imageUrl: widget.receiverAvatar,
+                          width: 35.0,
+                          height: 35.0,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Container(width: 35.0),
+                // ** Display Messages
+                // ** Text Msg
+                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  document["type"] == 0
+                      ? Container(
+                          padding:
+                              const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+                          width: 200.0,
+                          decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(8.0)),
+                          margin: const EdgeInsets.only(left: 10.0),
+                          child: Text(
+                            document["content"],
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400),
+                          ),
+                        )
+                      : document["type"] == 1
+                          // ** Image Msg
+                          ? Container(
+                              margin: const EdgeInsets.only(left: 10.0),
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => FullPhoto(
+                                                url: document["content"])));
+                                  },
+                                  child: Material(
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(8.0),
+                                    ),
+                                    clipBehavior: Clip.hardEdge,
+                                    child: CachedNetworkImage(
+                                      placeholder: (context, url) => Container(
+                                        width: 200.0,
+                                        height: 200.0,
+                                        padding: const EdgeInsets.all(70.0),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.grey,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(8.0),
+                                          ),
+                                        ),
+                                        child: const CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  Colors.lightBlueAccent),
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Material(
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(8.0),
+                                        ),
+                                        clipBehavior: Clip.hardEdge,
+                                        child: Image.asset(
+                                          '',
+                                          width: 200.0,
+                                          height: 200.0,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      imageUrl: document["content"],
+                                      width: 200.0,
+                                      height: 200.0,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )),
+                            )
+                          // ** Sticker .gif Msg
+                          : Container(
+                              margin: EdgeInsets.only(
+                                  bottom: isLastMsgRight(index) ? 20.0 : 10.0,
+                                  right: 10.0),
+                              child: Image.asset(
+                                "images/${document['content']}.gif",
+                                width: 100.0,
+                                height: 100.0,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                ]),
+              ],
+            ),
+            // ** Msg time
+            isLastMsgLeft(index)
+                ? Container(
+                    margin:
+                        const EdgeInsets.only(left: 50.0, top: 50.0, bottom: 5),
+                    child: Text(
+                      DateFormat("dd MMMM, yyyy - hh:mm:aa ").format(
+                          DateTime.fromMicrosecondsSinceEpoch(
+                              int.parse(document["timestamp"]))),
+                      style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12.0,
+                          fontStyle: FontStyle.italic),
+                    ),
+                  )
+                : Container()
+          ],
+        ),
+      );
     }
   }
 
