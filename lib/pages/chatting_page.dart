@@ -10,6 +10,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:telegram_chat/widgets/progress_widget.dart';
 
+import '../widgets/full_image_widget.dart';
+
 class Chat extends StatefulWidget {
   final String receiverId;
   final String receiveravatar;
@@ -303,9 +305,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     itemCount: snapshot.data!.docs.length,
                     reverse: true,
                     controller: listscrollController,
-                    itemBuilder: (context, index) {
-                      //createItem(index, snapshot.data!.docs[index]);
-                    },
+                    itemBuilder: (context, index) =>
+                        createItem(index, snapshot.data!.docs[index]),
                   );
                 }
               },
@@ -313,7 +314,119 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  createItem() {}
+  isLastMsgRight(int index) {
+    if ((index > 0 &&
+            listMessages != null &&
+            listMessages[index - 1]["idFrom"] != id) ||
+        index == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  isLastMsgLeft(int index) {
+    if ((index > 0 &&
+            listMessages != null &&
+            listMessages[index - 1]["idFrom"] == id) ||
+        index == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Widget createItem(int index, DocumentSnapshot document) {
+    // ** My Messages  - Right Side
+    if (document["idFrom"] == id) {
+      return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+        document["type"] == 0
+            // ** Text Msg
+            ? Container(
+                padding: const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+                width: 200.0,
+                decoration: BoxDecoration(
+                    color: Colors.lightBlueAccent,
+                    borderRadius: BorderRadius.circular(8.0)),
+                margin: EdgeInsets.only(
+                    bottom: isLastMsgRight(index) ? 20.0 : 10.0, right: 10.0),
+                child: Text(
+                  document["content"],
+                  style: const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              )
+            : document["type"] == 1
+                // ** Image Msg
+                ? Container(
+                    margin: EdgeInsets.only(
+                        bottom: isLastMsgRight(index) ? 20.0 : 10.0,
+                        right: 10.0),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      FullPhoto(url: document["content"])));
+                        },
+                        child: Material(
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(8.0),
+                          ),
+                          clipBehavior: Clip.hardEdge,
+                          child: CachedNetworkImage(
+                            placeholder: (context, url) => Container(
+                              width: 200.0,
+                              height: 200.0,
+                              padding: const EdgeInsets.all(70.0),
+                              decoration: const BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8.0),
+                                ),
+                              ),
+                              child: const CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.lightBlueAccent),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Material(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(8.0),
+                              ),
+                              clipBehavior: Clip.hardEdge,
+                              child: Image.asset(
+                                '',
+                                width: 200.0,
+                                height: 200.0,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            imageUrl: document["content"],
+                            width: 200.0,
+                            height: 200.0,
+                            fit: BoxFit.cover,
+                          ),
+                        )),
+                  )
+                : Container(
+                    margin: EdgeInsets.only(
+                        bottom: isLastMsgRight(index) ? 20.0 : 10.0,
+                        right: 10.0),
+                    child: Image.asset(
+                      "images/${document['content']}.gif",
+                      width: 100.0,
+                      height: 100.0,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+      ]);
+      // ** Receiver Messages - Left Side
+    } else {
+      return Container();
+    }
+  }
 
   createInput() {
     return Container(
