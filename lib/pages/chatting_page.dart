@@ -2,10 +2,12 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:telegram_chat/widgets/progress_widget.dart';
 
 class Chat extends StatefulWidget {
@@ -69,6 +71,9 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController textEditingController = TextEditingController();
+
+  final ScrollController listscrollController = ScrollController();
+
   final FocusNode focusNode = FocusNode();
   bool isDisplaySticker = false;
   bool? isLoading;
@@ -76,12 +81,37 @@ class _ChatScreenState extends State<ChatScreen> {
   File? imageFile;
   String? imageUrl;
 
+  String? chatId;
+  SharedPreferences? preferences;
+  String? id;
+
+  var listMessages;
+
   @override
   void initState() {
     super.initState();
     focusNode.addListener(onFocusChange);
     isDisplaySticker = false;
     isLoading = false;
+
+    chatId = "";
+    readLocal();
+  }
+
+  readLocal() async {
+    preferences = await SharedPreferences.getInstance();
+    id = preferences!.getString("id") ?? "";
+
+    if (id.hashCode <= widget.receiverId.hashCode) {
+      chatId = '$id-$widget.receiverId';
+    } else {
+      chatId = '$widget.receiverId-$id';
+    }
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(id)
+        .update({'chattingwith': widget.receiverId});
+    setState(() {});
   }
 
   onFocusChange() {
@@ -242,11 +272,48 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   createListMessages() {
-    return const Flexible(
-        child: CircularProgressIndicator(
-      valueColor: AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),
-    ));
+    return Flexible(
+      child: chatId == ""
+          ? const Center(
+              child: CircularProgressIndicator(
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),
+              ),
+            )
+          : StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection("messages")
+                  .doc(chatId)
+                  .collection(chatId!)
+                  .orderBy("timestamp", descending: true)
+                  .limit(20)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),
+                    ),
+                  );
+                } else {
+                  listMessages = snapshot.data!.docs;
+                  return ListView.builder(
+                    padding: const EdgeInsets.all(10.0),
+                    itemCount: snapshot.data!.docs.length,
+                    reverse: true,
+                    controller: listscrollController,
+                    itemBuilder: (context, index) {
+                      //createItem(index, snapshot.data!.docs[index]);
+                    },
+                  );
+                }
+              },
+            ),
+    );
   }
+
+  createItem() {}
 
   createInput() {
     return Container(
@@ -320,6 +387,27 @@ class _ChatScreenState extends State<ChatScreen> {
     // type = 0 its text msg
     // type = 1 its imageFile
     // type = 2 its sticker-emoji-gifs
+    if (contentMsg != "") {
+      textEditingController.clear();
+      var docRef = FirebaseFirestore.instance
+          .collection("messages")
+          .doc(chatId)
+          .collection(chatId!)
+          .doc(DateTime.now().microsecondsSinceEpoch.toString());
+      FirebaseFirestore.instance.runTransaction((transaction) async {
+        transaction.set(docRef, {
+          "idFrom": id,
+          "idTo": widget.receiverId,
+          "timestamp": DateTime.now().millisecondsSinceEpoch.toString(),
+          "content": contentMsg,
+          "type": type,
+        });
+      });
+      listscrollController.animateTo(0.0,
+          duration: const Duration(microseconds: 300), curve: Curves.easeOut);
+    } else {
+      Fluttertoast.showToast(msg: "Empty Message, Can not be send");
+    }
   }
 
   Future getImage() async {
