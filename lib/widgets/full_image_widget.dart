@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 class FullPhoto extends StatelessWidget {
   final String url;
@@ -6,12 +7,24 @@ class FullPhoto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.lightBlue,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          "Full Image",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
+      body: FullPhotoScreen(url: url),
+    );
   }
 }
 
 class FullPhotoScreen extends StatefulWidget {
-  const FullPhotoScreen({super.key});
+  final String url;
+  const FullPhotoScreen({super.key, required this.url});
 
   @override
   State<FullPhotoScreen> createState() => _FullPhotoScreenState();
@@ -25,6 +38,6 @@ class _FullPhotoScreenState extends State<FullPhotoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return PhotoView(imageProvider: NetworkImage(widget.url));
   }
 }
