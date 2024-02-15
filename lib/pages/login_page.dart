@@ -75,6 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 50),
             SizedBox(
               width: 300,
               height: 50,
@@ -146,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
           "id": user.uid,
           "aboutMe": 'I am Telegram Chat User',
           "createAt": DateTime.now().millisecondsSinceEpoch.toString(),
-          "chattingWith": null,
+          "chattingwith": null,
         });
         // ** Write Data to Local
         currentUser = user;

@@ -67,10 +67,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void readDataFromLocal() async {
     preferences = await SharedPreferences.getInstance();
-    id = preferences.getString("id")!;
-    nickname = preferences.getString("nickname")!;
-    photoUrl = preferences.getString("photoUrl")!;
-    aboutMe = preferences.getString("aboutMe")!;
+    id = preferences.getString("id") ?? "";
+    nickname = preferences.getString("nickname") ?? "";
+    photoUrl = preferences.getString("photoUrl") ?? "";
+    aboutMe = preferences.getString("aboutMe") ?? "";
 
     nickNameTextEditingController = TextEditingController(text: nickname);
     aboutMeTextEditingController = TextEditingController(text: aboutMe);
