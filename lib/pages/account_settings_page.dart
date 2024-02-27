@@ -213,7 +213,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           size: 100.0,
                           color: Colors.white,
                         ),
-                        padding: const EdgeInsets.all(0.0),
+                        padding: const EdgeInsets.all(50),
                         splashColor: Colors.transparent,
                         highlightColor: Colors.grey,
                         iconSize: 200.0,

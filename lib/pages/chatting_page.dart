@@ -539,21 +539,21 @@ class _ChatScreenState extends State<ChatScreen> {
             ],
           ),
           // ** Msg time
-          isLastMsgLeft(index)
-              ? Container(
-                  margin:
-                      const EdgeInsets.only(left: 50.0, top: 5.0, bottom: 5),
-                  child: Text(
-                    DateFormat("dd MMMM, yyyy - hh:mm:aa ").format(
-                        DateTime.fromMicrosecondsSinceEpoch(
-                            int.parse(document["timestamp"]))),
-                    style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12.0,
-                        fontStyle: FontStyle.italic),
-                  ),
-                )
-              : Container()
+          // isLastMsgLeft(index)
+          //     ? Container(
+          //         margin:
+          //             const EdgeInsets.only(left: 50.0, top: 5.0, bottom: 5),
+          //         child: Text(
+          //           DateFormat("dd MMMM, yyyy - hh:mm:aa ").format(
+          //               DateTime.fromMicrosecondsSinceEpoch(
+          //                   int.parse(document["timestamp"]))),
+          //           style: const TextStyle(
+          //               color: Colors.grey,
+          //               fontSize: 12.0,
+          //               fontStyle: FontStyle.italic),
+          //         ),
+          //       )
+          //     : Container()
         ],
       ),
     );
