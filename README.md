@@ -22,6 +22,7 @@ flutter pub get
 Before running the app, you need to configure Firebase Authentication with Google Sign-In:
 
 Go to the Firebase Console.
+
 1- Create a new project or select an existing one.
 
 2- Enable Google Sign-In authentication method in the Firebase Authentication panel.
