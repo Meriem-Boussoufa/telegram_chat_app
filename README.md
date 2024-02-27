@@ -23,10 +23,15 @@ Before running the app, you need to configure Firebase Authentication with Googl
 
 Go to the Firebase Console.
 1- Create a new project or select an existing one.
+
 2- Enable Google Sign-In authentication method in the Firebase Authentication panel.
+
 3- Retrieves the SHA1 key for your debug keystore: keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android 
+
 3- Add your Android application to the Firebase.
+
 4- Download the google-services.json file and add it to the android/app directory of your Flutter project using the following commands:
+
   - Re-authenticate Firebase CLI: firebase login --reauth 
   - Installs the FlutterFire CLI, a command-line tool for Flutter Firebase integration: dart pub global activate flutterfire_cli 
   - Lists all your Firebase projects along with their IDs: firebase projects:list 
